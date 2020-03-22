@@ -6,6 +6,8 @@
   "license": "MIT",
   "scripts": {
     "build": "babel ./src/index.js --out-dir dist",
+    "docker:mongo": "docker run -d --user $(id -u):$(id -g) --rm --name mongoDev -p 27017:27017 -v /etc/localtime:/etc/localtime:ro -v /etc/timezone:/etc/timezone:ro -v ~/mongoData/data:/data/db mongo:4.2.3",
+    "docker:mongoClean": "docker rm -f mongoDev",
     "test": "jest --watch-all --runInBand",
     "watch": "env-cmd babel-watch src/index.js"
   },
@@ -22,6 +24,7 @@
   "dependencies": {
     "env-cmd": "^10.1.0",
     "express": "^4.17.1",
+    "mongoose": "^5.9.5",
     "morgan": "^1.10.0"
   },
   "eslintConfig": {
