@@ -3,19 +3,40 @@ import mongoose from 'mongoose'
 const BootcampSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    unique: true,
-    trim: true
+    maxlength: [50, 'Name field must be less or equal to 50 characters long'],
+    required: [true, 'Name field is required'],
+    trim: true,
+    unique: true
   },
   slug: String,
   description: {
     type: String,
-    required: true,
+    maxlength: [500, 'Description field must be less or equal to 500 characters long'],
+    required: [true, 'Description field is required'],
     trim: true
   },
-  website: String,
-  phone: String,
-  email: String,
+  website: {
+    type: String,
+    match: [
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/,
+      'Website field must be a valid url (http or https)'
+    ]
+  },
+  phone: {
+    type: String,
+    maxlength: [20, 'Phone field must be less or equal to 20 characters long']
+  },
+  email: {
+    type: String,
+    match: [
+      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+      'Email field must be a valid email'
+    ]
+  },
+  address: {
+    type: String,
+    required: [true, 'Address field is required']
+  },
   location: {
     type: {
       type: String,
@@ -44,7 +65,11 @@ const BootcampSchema = new mongoose.Schema({
       'Other'
     ]
   },
-  averageRating: Number,
+  averageRating: {
+    type: Number,
+    min: [1, 'Rating must be at least 1'],
+    max: [10, 'Rating can not be more than 10']
+  },
   averageCost: Number,
   photo: {
     type: String,
