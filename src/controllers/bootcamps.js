@@ -1,9 +1,11 @@
+import { Bootcamp } from '../models'
+
 /*
   @desc       Get all bootcamps
   @route      GET /api/bootcamps
   @access     Public
 */
-const getBootcamps = (req, res) => {
+const getBootcamps = async (req, res) => {
   res.status(200).json({ success: true, msg: 'show all bootcamps' })
 }
 
@@ -21,8 +23,14 @@ const getBootcamp = (req, res) => {
   @route      POST /api/bootcamps
   @access     Private
 */
-const createBootcamp = (req, res) => {
-  res.status(200).json({ success: true, msg: 'create bootcamp' })
+const createBootcamp = async (req, res) => {
+  try {
+    const bootcamp = await Bootcamp.create(req.body)
+
+    res.status(201).json({ success: true, data: bootcamp })
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message })
+  }
 }
 
 /*
