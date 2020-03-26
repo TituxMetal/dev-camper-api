@@ -56,8 +56,26 @@ const createBootcamp = async (req, res) => {
   @route      PUT /api/bootcamps/:id
   @access     Private
 */
-const updateBootcamp = (req, res) => {
-  res.status(200).json({ success: true, msg: `update bootcamp ${req.params.id}` })
+const updateBootcamp = async (req, res) => {
+  const bootcampId = req.params.id
+  const data = req.body
+  const updates = Object.keys(data)
+
+  try {
+    const foundBootcamp = await Bootcamp.findById(bootcampId)
+
+    if (!foundBootcamp) {
+      const error = JSON.stringify({ success: false, error: 'No bootcamp found' })
+      throw new Error(error)
+    }
+
+    updates.forEach(update => (foundBootcamp[update] = data[update]))
+    const updatedBootcamp = await foundBootcamp.save(req.body)
+
+    res.status(200).json({ success: true, data: updatedBootcamp })
+  } catch (error) {
+    res.status(400).json({ success: false, error: 'Something went wrong.' })
+  }
 }
 
 /*
