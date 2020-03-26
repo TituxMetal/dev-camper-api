@@ -6,7 +6,13 @@ import { Bootcamp } from '../models'
   @access     Public
 */
 const getBootcamps = async (req, res) => {
-  res.status(200).json({ success: true, msg: 'show all bootcamps' })
+  try {
+    const bootcamps = await Bootcamp.find()
+
+    res.status(200).json({ success: true, data: bootcamps })
+  } catch (error) {
+    res.status(400).json({ success: false })
+  }
 }
 
 /*
@@ -14,8 +20,20 @@ const getBootcamps = async (req, res) => {
   @route      GET /api/bootcamps/:id
   @access     Public
 */
-const getBootcamp = (req, res) => {
-  res.status(200).json({ success: true, msg: `show bootcamp ${req.params.id}` })
+const getBootcamp = async (req, res) => {
+  try {
+    const bootcampId = req.params.id
+    const bootcamp = await Bootcamp.findById(bootcampId)
+
+    if (!bootcamp) {
+      res.status(400).json({ success: false, error: 'No bootcamp for this id' })
+      return
+    }
+
+    res.status(200).json({ success: true, data: bootcamp })
+  } catch (error) {
+    res.status(400).json({ success: false })
+  }
 }
 
 /*
