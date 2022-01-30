@@ -1,18 +1,13 @@
-import express from 'express'
+import { Router } from 'express'
 
-import bootcampsController from '../controllers'
+import { bootcampsController } from '~/controllers'
 
-const {
-  createBootcamp,
-  deleteBootcamp,
-  getBootcamp,
-  getBootcamps,
-  updateBootcamp
-} = bootcampsController
+const router = new Router()
 
-const router = express.Router()
-
-router.route('/').get(getBootcamps).post(createBootcamp)
-router.route('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp)
+router.get('/', bootcampsController.getAll)
+router.get('/:bootcampId', bootcampsController.getSingle)
+router.post('/', bootcampsController.create)
+router.put('/:bootcampId', bootcampsController.update)
+router.delete('/:bootcampId', bootcampsController.remove)
 
 export default router
