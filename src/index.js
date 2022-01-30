@@ -1,4 +1,10 @@
-import { mode, port } from './config'
-import server from './server'
+import { connectMongoDb, setupCloseOnExit } from '@lgdweb/common-express-helpers'
 
-server.listen(port, process.stdout.write(`Server is running in ${mode} mode on port ${port}\n`))
+import { mongoOptions, mongoUri, inProd } from '~/config'
+
+import { createApp } from './app'
+
+const server = createApp()
+
+connectMongoDb({ mongoOptions, mongoUri, verbose: !inProd })
+setupCloseOnExit(server)
