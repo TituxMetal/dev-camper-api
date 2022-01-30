@@ -1,46 +1,83 @@
 /*
-  @desc       Get all courses
-  @route      GET /api/courses
-  @access     Public
-*/
-const getCourses = (req, res) => {
-  res.status(200).json({ success: true, msg: 'show all courses' })
-}
-
-/*
-  @desc       Get single course
-  @route      GET /api/courses/:id
-  @access     Public
-*/
-const getCourse = (req, res) => {
-  res.status(200).json({ success: true, msg: `show course ${req.params.id}` })
-}
-
-/*
   @desc       Create new course
   @route      POST /api/courses
   @access     Private
 */
-const createCourse = (req, res) => {
-  res.status(200).json({ success: true, msg: 'create course' })
+const create = ({ body }, res) => {
+  const newCourse = { ...body }
+  const response = {
+    info: 'POST /api/courses',
+    message: 'Course has been successfully created.',
+    course: newCourse
+  }
+
+  res.status(201).json(response)
 }
 
 /*
-  @desc       Update course
-  @route      PUT /api/courses/:id
-  @access     Private
+  @desc       Get all courses
+  @route      GET /api/courses
+  @access     Public
 */
-const updateCourse = (req, res) => {
-  res.status(200).json({ success: true, msg: `update course ${req.params.id}` })
+const getAll = (req, res) => {
+  const courses = []
+  const response = {
+    info: 'GET /api/courses',
+    count: courses.length,
+    courses
+  }
+  res.status(200).json(response)
+}
+
+/*
+  @desc       Get single course
+  @route      GET /api/courses/:courseId
+  @access     Public
+*/
+const getSingle = ({ params }, res) => {
+  const courseId = params.courseId
+  const response = {
+    info: 'GET /api/courses/:courseId',
+    params: courseId,
+    course: {}
+  }
+
+  res.status(200).json(response)
 }
 
 /*
   @desc       Delete course
-  @route      DELETE /api/courses/:id
+  @route      DELETE /api/courses/:courseId
   @access     Private
 */
-const deleteCourse = (req, res) => {
-  res.status(200).json({ success: true, msg: `delete course ${req.params.id}` })
+const remove = ({ params }, res) => {
+  const courseId = params.courseId
+  const response = {
+    info: 'DELETE /api/courses/:courseId',
+    params: courseId,
+    message: 'Course has been successfully removed.',
+    course: {}
+  }
+
+  res.status(200).json(response)
 }
 
-export default { createCourse, deleteCourse, getCourse, getCourses, updateCourse }
+/*
+  @desc       Update course
+  @route      PUT /api/courses/:courseId
+  @access     Private
+*/
+const update = ({ body, params }, res) => {
+  const courseId = params.courseId
+  const updatedCourse = { id: courseId, ...body }
+  const response = {
+    info: 'PUT /api/courses/:courseId',
+    params: courseId,
+    message: 'Course has been successfully updated.',
+    bootcamp: updatedCourse
+  }
+
+  res.status(200).json(response)
+}
+
+export default { create, getAll, getSingle, remove, update }

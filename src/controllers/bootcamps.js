@@ -1,103 +1,83 @@
-import { Bootcamp } from '../models'
+/*
+  @desc       Create new bootcamp
+  @route      POST /api/bootcamps
+  @access     Private
+*/
+const create = async ({ body }, res) => {
+  const newBootcamp = { ...body }
+  const response = {
+    info: 'POST /api/bootcamps',
+    message: 'Bootcamp has been successfully created.',
+    bootcamp: newBootcamp
+  }
+
+  res.status(201).json(response)
+}
 
 /*
   @desc       Get all bootcamps
   @route      GET /api/bootcamps
   @access     Public
 */
-const getBootcamps = async (req, res) => {
-  try {
-    const bootcamps = await Bootcamp.find()
-
-    res.status(200).json({ success: true, data: bootcamps })
-  } catch (error) {
-    res.status(400).json({ success: false })
+const getAll = async (_req, res) => {
+  const bootcamps = []
+  const response = {
+    info: 'GET /api/bootcamps',
+    count: bootcamps.length,
+    bootcamps
   }
+  res.status(200).json(response)
 }
 
 /*
   @desc       Get single bootcamp
-  @route      GET /api/bootcamps/:id
+  @route      GET /api/bootcamps/:bootcampId
   @access     Public
 */
-const getBootcamp = async (req, res) => {
-  try {
-    const bootcampId = req.params.id
-    const bootcamp = await Bootcamp.findById(bootcampId)
-
-    if (!bootcamp) {
-      res.status(400).json({ success: false, error: 'No bootcamp for this id' })
-      return
-    }
-
-    res.status(200).json({ success: true, data: bootcamp })
-  } catch (error) {
-    res.status(400).json({ success: false })
+const getSingle = async ({ params }, res) => {
+  const bootcampId = params.bootcampId
+  const response = {
+    info: 'GET /api/bootcamps/:bootcampId',
+    params: bootcampId,
+    bootcamp: {}
   }
-}
 
-/*
-  @desc       Create new bootcamp
-  @route      POST /api/bootcamps
-  @access     Private
-*/
-const createBootcamp = async (req, res) => {
-  try {
-    const bootcamp = await Bootcamp.create(req.body)
-
-    res.status(201).json({ success: true, data: bootcamp })
-  } catch (error) {
-    res.status(400).json({ success: false, error: error.message })
-  }
-}
-
-/*
-  @desc       Update bootcamp
-  @route      PUT /api/bootcamps/:id
-  @access     Private
-*/
-const updateBootcamp = async (req, res) => {
-  const bootcampId = req.params.id
-  const data = req.body
-  const updates = Object.keys(data)
-
-  try {
-    const foundBootcamp = await Bootcamp.findById(bootcampId)
-
-    if (!foundBootcamp) {
-      const error = JSON.stringify({ success: false, error: 'No bootcamp found' })
-      throw new Error(error)
-    }
-
-    updates.forEach(update => (foundBootcamp[update] = data[update]))
-    const updatedBootcamp = await foundBootcamp.save(req.body)
-
-    res.status(200).json({ success: true, data: updatedBootcamp })
-  } catch (error) {
-    res.status(400).json({ success: false, error: 'Something went wrong.' })
-  }
+  res.status(200).json(response)
 }
 
 /*
   @desc       Delete bootcamp
-  @route      DELETE /api/bootcamps/:id
+  @route      DELETE /api/bootcamps/:bootcampId
   @access     Private
 */
-const deleteBootcamp = async (req, res) => {
-  const bootcampId = req.params.id
-
-  try {
-    const foundBootcamp = await Bootcamp.findOneAndDelete({ _id: bootcampId })
-
-    if (!foundBootcamp) {
-      const error = JSON.stringify({ success: false, error: 'No bootcamp found' })
-      throw new Error(error)
-    }
-
-    res.status(200).json({ success: true, data: {} })
-  } catch (error) {
-    res.status(400).json({ success: false, error: 'Something went wrong.' })
+const remove = async ({ params }, res) => {
+  const bootcampId = params.bootcampId
+  const response = {
+    info: 'DELETE /api/bootcamps/:bootcampId',
+    params: bootcampId,
+    message: 'Bootcamp has been successfully removed.',
+    bootcamp: {}
   }
+
+  res.status(200).json(response)
 }
 
-export default { createBootcamp, deleteBootcamp, getBootcamp, getBootcamps, updateBootcamp }
+/*
+  @desc       Update bootcamp
+  @route      PUT /api/bootcamps/:bootcampId
+  @access     Private
+*/
+const update = async ({ body, params }, res) => {
+  const bootcampId = params.bootcampId
+  const updatedBootcamp = { id: bootcampId, ...body }
+  const response = {
+    info: 'PUT /api/bootcamps/:bootcampId',
+    params: bootcampId,
+    message: 'Bootcamp has been successfully updated.',
+    bootcamp: updatedBootcamp
+  }
+
+  res.status(200).json(response)
+}
+
+export default { create, getAll, getSingle, remove, update }

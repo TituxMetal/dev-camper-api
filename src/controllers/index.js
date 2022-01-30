@@ -1,4 +1,2 @@
-import bootcamps from './bootcamps'
-import courses from './courses'
-
-export default { ...bootcamps, ...courses }
+export { default as bootcampsController } from './bootcamps'
+export { default as coursesController } from './courses'
