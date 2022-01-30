@@ -1,35 +1,49 @@
 {
-  "name": "20032020-dev-camper-api",
-  "version": "1.0.0",
-  "main": "src/index.js",
-  "author": "Titux Metal <github@lgdweb.fr>",
+  "author": "Titux Metal (DEV) <github@lgdweb.fr>",
   "license": "MIT",
+  "main": "src/index.js",
+  "name": "dev-camper-api",
+  "repository": "https://github.com/TituxMetal/dev-camper-api.git",
+  "version": "1.0.0",
   "scripts": {
-    "build": "babel ./src/index.js --out-dir dist",
-    "docker:mongo": "docker run -d --user $(id -u):$(id -g) --rm --name mongoDev -p 27017:27017 -v /etc/localtime:/etc/localtime:ro -v /etc/timezone:/etc/timezone:ro -v ~/mongoData/data:/data/db mongo:4.2.3",
-    "docker:mongoClean": "docker rm -f mongoDev",
-    "test": "jest --watch-all --runInBand",
-    "watch": "env-cmd babel-watch src/index.js"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.7",
-    "@babel/node": "^7.8.7",
-    "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.7",
-    "babel-jest": "^25.1.0",
-    "babel-watch": "^7.0.0",
-    "eslint-config-standard-airbnb-bundle": "^1.0.5"
+    "build:dev": "env-cmd babel src -d dist",
+    "build": "babel src -d dist",
+    "clear": "rm -rf dist",
+    "docker:down": "docker-compose down",
+    "docker:stop": "docker-compose stop",
+    "docker:up": "docker-compose up -d",
+    "heroku-postbuild": "babel src -d ./dist --copy-files",
+    "prebuild": "yarn clear",
+    "predocker:up": "mkdir -p .docker/data/{db,log}",
+    "prestart": "yarn build",
+    "start": "node ./dist/index.js",
+    "start:dev": "env-cmd node ./dist/index.js",
+    "watch": "env-cmd babel-watch -L src/index.js"
   },
   "dependencies": {
-    "env-cmd": "^10.1.0",
-    "express": "^4.17.1",
-    "mongoose": "^5.9.5",
-    "morgan": "^1.10.0"
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.12",
+    "@babel/plugin-transform-runtime": "^7.16.10",
+    "@babel/preset-env": "^7.16.11",
+    "@lgdweb/common-express-helpers": "^2.0.5",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "express-async-errors": "^3.1.1",
+    "express-validator": "^6.14.0",
+    "http-errors": "^2.0.0",
+    "mongoose": "^6.1.8"
   },
-  "eslintConfig": {
-    "extends": [
-      "standard-airbnb-bundle"
-    ]
+  "devDependencies": {
+    "babel-watch": "^7.7.0",
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.8.0",
+    "eslint-config-kentcdodds": "^19.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "morgan": "^1.10.0",
+    "prettier": "^2.5.1"
   }
 }
