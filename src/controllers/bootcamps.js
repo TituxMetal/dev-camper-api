@@ -1,10 +1,15 @@
+import { requestValidator } from '@lgdweb/common-express-helpers'
+
+import { bootcampService } from '~/services'
+import { bootcampsValidator, objectIdValidator } from '~/validation'
+
 /*
   @desc       Create new bootcamp
   @route      POST /api/bootcamps
   @access     Private
 */
 const create = async ({ body }, res) => {
-  const newBootcamp = { ...body }
+  const newBootcamp = await bootcampService.add(body)
   const response = {
     info: 'POST /api/bootcamps',
     message: 'Bootcamp has been successfully created.',
@@ -20,7 +25,7 @@ const create = async ({ body }, res) => {
   @access     Public
 */
 const getAll = async (_req, res) => {
-  const bootcamps = []
+  const bootcamps = await bootcampService.all()
   const response = {
     info: 'GET /api/bootcamps',
     count: bootcamps.length,
@@ -36,10 +41,11 @@ const getAll = async (_req, res) => {
 */
 const getSingle = async ({ params }, res) => {
   const bootcampId = params.bootcampId
+  const bootcamp = await bootcampService.details(bootcampId)
   const response = {
     info: 'GET /api/bootcamps/:bootcampId',
     params: bootcampId,
-    bootcamp: {}
+    bootcamp
   }
 
   res.status(200).json(response)
@@ -52,11 +58,12 @@ const getSingle = async ({ params }, res) => {
 */
 const remove = async ({ params }, res) => {
   const bootcampId = params.bootcampId
+  const deletedBootcamp = await bootcampService.remove(bootcampId)
   const response = {
     info: 'DELETE /api/bootcamps/:bootcampId',
     params: bootcampId,
     message: 'Bootcamp has been successfully removed.',
-    bootcamp: {}
+    bootcamp: deletedBootcamp
   }
 
   res.status(200).json(response)
@@ -69,7 +76,7 @@ const remove = async ({ params }, res) => {
 */
 const update = async ({ body, params }, res) => {
   const bootcampId = params.bootcampId
-  const updatedBootcamp = { id: bootcampId, ...body }
+  const updatedBootcamp = await bootcampService.update(bootcampId, body)
   const response = {
     info: 'PUT /api/bootcamps/:bootcampId',
     params: bootcampId,
@@ -80,4 +87,14 @@ const update = async ({ body, params }, res) => {
   res.status(200).json(response)
 }
 
-export default { create, getAll, getSingle, remove, update }
+export default {
+  create: [requestValidator(bootcampsValidator.create), create],
+  getAll,
+  getSingle: [requestValidator(objectIdValidator('bootcampId')), getSingle],
+  remove: [requestValidator(objectIdValidator('bootcampId')), remove],
+  update: [
+    requestValidator(objectIdValidator('bootcampId')),
+    requestValidator(bootcampsValidator.update),
+    update
+  ]
+}
