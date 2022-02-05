@@ -2,7 +2,11 @@ import { Router } from 'express'
 
 import { bootcampsController } from '~/controllers'
 
-const router = new Router()
+import coursesRoutes from './courses'
+
+const router = new Router({ mergeParams: true })
+
+router.use('/:bootcampId/courses', coursesRoutes)
 
 router.get('/', bootcampsController.getAll)
 router.get('/:bootcampId', bootcampsController.getSingle)

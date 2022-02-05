@@ -2,7 +2,7 @@ import { Router } from 'express'
 
 import { coursesController } from '~/controllers'
 
-const router = new Router()
+const router = new Router({ mergeParams: true })
 
 router.get('/', coursesController.getAll)
 router.get('/:courseId', coursesController.getSingle)
