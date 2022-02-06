@@ -74,6 +74,13 @@ bootcampSchema.set('toJSON', {
   transform: (doc, { _id, ...rest }) => rest
 })
 
-const bootcamp = model('bootcamp', bootcampSchema)
+bootcampSchema.virtual('courses', {
+  ref: 'Course',
+  localField: '_id',
+  foreignField: 'bootcamp',
+  justOne: false
+})
+
+const bootcamp = model('Bootcamp', bootcampSchema)
 
 export default bootcamp
