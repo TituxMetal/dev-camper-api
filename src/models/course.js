@@ -35,6 +35,6 @@ courseSchema.set('toJSON', {
   transform: (doc, { _id, ...rest }) => rest
 })
 
-const course = model('course', courseSchema)
+const course = model('Course', courseSchema)
 
 export default course
