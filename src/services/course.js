@@ -31,7 +31,10 @@ const add = async ({ title, description, weeks, tuition, minimumSkill, bootcamp,
 const all = async (field = null) => Course.find(field)
 
 const details = async (value = '', field = '_id') => {
-  const courseDetails = await Course.findOne({ [field]: value })
+  const courseDetails = await Course.findOne({ [field]: value }).populate({
+    path: 'bootcamp',
+    select: 'name description'
+  })
 
   if (!courseDetails) {
     throw new HttpError(404, { reason: 'No course found.' })
