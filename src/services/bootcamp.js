@@ -20,10 +20,17 @@ const add = async ({ name, description, address, careers, ...rest }) => {
   return newBootcamp
 }
 
-const all = async (field = null) => Bootcamp.find(field)
+const all = async (field = null) =>
+  Bootcamp.find(field).populate({
+    path: 'courses',
+    select: 'title -bootcamp'
+  })
 
 const details = async (value = '', field = '_id') => {
-  const bootcampDetails = await Bootcamp.findOne({ [field]: value })
+  const bootcampDetails = await Bootcamp.findOne({ [field]: value }).populate({
+    path: 'courses',
+    select: 'title -bootcamp'
+  })
 
   if (!bootcampDetails) {
     throw new HttpError(404, { reason: 'No bootcamp found.' })
